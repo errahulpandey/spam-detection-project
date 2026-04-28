@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Model Comparison</h1>
+        <p>Compare ML prediction with a simple rule-based detector.</p>
+    </div>
+</div>
+
+<div class="glass-card">
+    <form method="POST">
+        <textarea class="form-control mb-3" name="message" rows="5" placeholder="Enter email text..."></textarea>
+        <button class="btn btn-main">Compare</button>
+    </form>
+
+    {% if result %}
+    <hr>
+    <p><b>Text:</b> {{ result.text }}</p>
+    <p><b>ML Model:</b> {{ result.ml_model }} ({{ result.confidence }}%)</p>
+    <p><b>Rule Based:</b> {{ result.rule_based }}</p>
+    {% endif %}
+</div>
+{% endblock %}

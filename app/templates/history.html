@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}History | Spam Shield{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>History</h1>
+        <p>Search, filter, sort, export, and manage records.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="/export_csv" class="btn btn-main">⬇ Export CSV</a>
+        <button class="btn btn-soft theme-btn" onclick="toggleTheme()">🌓 Theme</button>
+    </div>
+</div>
+
+<div class="glass-card mb-4">
+    <form class="row g-3" method="GET">
+        <div class="col-md-5">
+            <input class="form-control" name="search" placeholder="Search messages..." value="{{ search }}">
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="prediction">
+                <option value="">All</option>
+                <option value="Spam" {% if prediction_filter == 'Spam' %}selected{% endif %}>Spam</option>
+                <option value="Not Spam" {% if prediction_filter == 'Not Spam' %}selected{% endif %}>Not Spam</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select class="form-select" name="sort">
+                <option value="latest" {% if sort == 'latest' %}selected{% endif %}>Latest</option>
+                <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-main">Apply</button>
+        </div>
+    </form>
+</div>
+
+<div class="glass-card">
+    <div class="d-flex justify-content-end mb-3">
+        <form method="POST" action="/clear_history" onsubmit="return confirm('Clear all history?')">
+            <button class="btn btn-danger">🗑 Clear All</button>
+        </form>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Message</th>
+                    <th>Prediction</th>
+                    <th>Confidence</th>
+                    <th>Source</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.message }}</td>
+                    <td>
+                        {% if row.prediction == 'Spam' %}
+                        <span class="pill-spam">Spam</span>
+                        {% else %}
+                        <span class="pill-ham">Not Spam</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ row.confidence }}%</td>
+                    <td>{{ row.source }}</td>
+                    <td>{{ row.date }}</td>
+                    <td>
+                        <form method="POST" action="/delete/{{ row.id }}" onsubmit="return confirm('Delete this record?')">
+                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7" class="empty-state">No records found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

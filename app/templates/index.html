@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Home | Spam Shield{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Email Spam Detector</h1>
+        <p>Single scan, bulk scan, and text file scan in one place.</p>
+    </div>
+    <button class="btn btn-soft theme-btn" onclick="toggleTheme()">🌓 Theme</button>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="glass-card">
+            <h4 class="mb-3">Single Message Scan</h4>
+            <form action="/predict" method="POST">
+                <textarea class="form-control mb-3" name="message" rows="6" placeholder="Paste email text here..." required></textarea>
+                <button class="btn btn-main">🔍 Detect Spam</button>
+            </form>
+
+            {% if prediction_text %}
+            <div class="alert alert-info mt-3 mb-0">{{ prediction_text }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="glass-card">
+            <h4 class="mb-3">Upload .txt File</h4>
+            <form action="/upload_text" method="POST" enctype="multipart/form-data">
+                <input type="file" class="form-control mb-3" name="text_file" accept=".txt" required>
+                <button class="btn btn-main">📂 Scan File</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="glass-card">
+            <h4 class="mb-3">Bulk Message Scan</h4>
+            <form action="/bulk_scan" method="POST">
+                <textarea class="form-control mb-3" name="bulk_messages" rows="7" placeholder="Enter one message per line..."></textarea>
+                <button class="btn btn-main">⚡ Scan All</button>
+            </form>
+
+            {% if bulk_results %}
+            <div class="table-responsive mt-4">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Message</th>
+                            <th>Prediction</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in bulk_results %}
+                        <tr>
+                            <td>{{ item.message }}</td>
+                            <td>
+                                {% if item.prediction == 'Spam' %}
+                                <span class="pill-spam">Spam</span>
+                                {% else %}
+                                <span class="pill-ham">Not Spam</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.confidence }}%</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

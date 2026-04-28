@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | Spam Shield{% endblock %}
+
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Dashboard</h1>
+        <p>Visual overview of spam detection activity.</p>
+    </div>
+    <button class="btn btn-soft theme-btn" onclick="toggleTheme()">🌓 Theme</button>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="text-secondary mb-2">Total Emails</div>
+            <div class="stat-value">{{ total }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="text-secondary mb-2">Spam</div>
+            <div class="stat-value">{{ spam }}</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="text-secondary mb-2">Not Spam</div>
+            <div class="stat-value">{{ not_spam }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="glass-card">
+            <h4 class="mb-3">Spam Analysis</h4>
+            <canvas id="spamChart"></canvas>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="glass-card">
+            <h4 class="mb-3">Top Spam Keywords</h4>
+
+            {% if top_words %}
+            <ul>
+                {% for word, count in top_words %}
+                <li>{{ word }} — {{ count }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="empty-state">No spam keywords yet.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="glass-card">
+            <h4 class="mb-3">Recent Predictions</h4>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Confidence</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for row in recent %}
+                        <tr>
+                            <td>{{ row.id }}</td>
+                            <td>
+                                {{ row.message[:70] }}
+                                {% if row.message|length > 70 %}...{% endif %}
+                            </td>
+                            <td>
+                                {% if row.prediction == 'Spam' %}
+                                <span class="pill-spam">Spam</span>
+                                {% else %}
+                                <span class="pill-ham">Not Spam</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ row.confidence }}%</td>
+                            <td>{{ row.source }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="empty-state">No data yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="dashboard-data" type="application/json">
+{
+    "spam": {{ spam | tojson }},
+    "notSpam": {{ not_spam | tojson }}
+}
+</script>
+{% endblock %}
+
+{% block extra_script %}
+<script>
+const dashboardData = JSON.parse(document.getElementById("dashboard-data").textContent);
+
+new Chart(document.getElementById("spamChart"), {
+    type: "doughnut",
+    data: {
+        labels: ["Spam", "Not Spam"],
+        datasets: [{
+            data: [dashboardData.spam, dashboardData.notSpam],
+            backgroundColor: ["#ef4444", "#22c55e"],
+            borderWidth: 0
+        }]
+    }
+});
+</script>
+{% endblock %}

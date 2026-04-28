@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>📝 Register</h1>
+        <p>Create a new account</p>
+    </div>
+</div>
+
+<div class="glass-card" style="max-width:400px;margin:auto;">
+    <form method="POST">
+        <input type="text" name="username" class="form-control mb-3" placeholder="Username" required>
+        <input type="password" name="password" class="form-control mb-3" placeholder="Password" required>
+
+        <button class="btn btn-main w-100">Register</button>
+    </form>
+
+    {% if error %}
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+    {% endif %}
+
+    <p class="mt-3 text-center">
+        Already have an account? <a href="/login">Login</a>
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>📧 Gmail Scanner</h1>
+        <p>Enter Gmail and App Password to fetch and scan emails.</p>
+    </div>
+</div>
+
+<div class="glass-card mb-4">
+    <form method="POST" action="/fetch_user_gmail">
+        <input class="form-control mb-3" name="email" placeholder="Enter Gmail" required>
+        <input class="form-control mb-3" name="password" type="password" placeholder="Enter App Password" required>
+
+        <button class="btn btn-main w-100">
+            🔍 Fetch & Scan Emails
+        </button>
+    </form>
+</div>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+{% if emails %}
+<div class="glass-card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Preview</th>
+                <th>Status</th>
+                <th>Confidence</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for e in emails %}
+            <tr>
+                <td>{{ e.subject }}</td>
+                <td>{{ e.preview }}</td>
+                <td>
+                    {% if e.prediction == "Spam" %}
+                    <span class="pill-spam">Spam</span>
+                    {% else %}
+                    <span class="pill-ham">Not Spam</span>
+                    {% endif %}
+                </td>
+                <td>{{ e.confidence }}%</td>
+                <td>{{ e.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

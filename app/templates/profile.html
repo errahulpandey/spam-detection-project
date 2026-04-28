@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Profile | Spam Shield{% endblock %}
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>Profile</h1>
+        <p>User overview and activity summary.</p>
+    </div>
+    <button class="btn btn-soft theme-btn" onclick="toggleTheme()">🌓 Theme</button>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="stat-card">
+            <div class="text-secondary mb-2">Username</div>
+            <div class="stat-value">{{ username }}</div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="stat-card">
+            <div class="text-secondary mb-2">Total Checked</div>
+            <div class="stat-value">{{ total }}</div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="stat-card">
+            <div class="text-secondary mb-2">Spam Detected</div>
+            <div class="stat-value">{{ spam }}</div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="stat-card">
+            <div class="text-secondary mb-2">Not Spam</div>
+            <div class="stat-value">{{ not_spam }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

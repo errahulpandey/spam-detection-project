@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Spam Shield{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#0f172a;
+            --panel:rgba(255,255,255,.08);
+            --border:rgba(255,255,255,.12);
+            --text:#e5eefc;
+            --muted:#b9c6dd;
+            --primary:#6d7cff;
+            --secondary:#8b5cf6;
+            --danger:#ef4444;
+            --success:#22c55e;
+        }
+        body.light-mode{
+            --bg:#eef2ff;
+            --panel:rgba(255,255,255,.88);
+            --border:rgba(15,23,42,.08);
+            --text:#0f172a;
+            --muted:#475569;
+        }
+        *{font-family:'Inter',sans-serif}
+        body{
+            margin:0;
+            background:
+                radial-gradient(circle at top left, rgba(109,124,255,0.24), transparent 28%),
+                radial-gradient(circle at top right, rgba(139,92,246,0.22), transparent 25%),
+                linear-gradient(135deg,#0b1220,#111827 45%,#1e1b4b 100%);
+            color:var(--text);
+            min-height:100vh;
+        }
+        body.light-mode{
+            background:linear-gradient(135deg,#eef2ff,#f8fafc);
+        }
+        .app-shell{display:flex;min-height:100vh}
+        .sidebar{
+            width:260px;
+            background:rgba(15,23,42,.78);
+            border-right:1px solid var(--border);
+            backdrop-filter:blur(18px);
+            padding:24px 16px;
+        }
+        body.light-mode .sidebar{background:rgba(255,255,255,.8)}
+        .brand{
+            display:flex;gap:12px;align-items:center;
+            padding:12px;border-radius:18px;
+            background:var(--panel);border:1px solid var(--border);
+            margin-bottom:22px
+        }
+        .brand-icon{
+            width:46px;height:46px;display:grid;place-items:center;
+            border-radius:14px;color:#fff;font-weight:800;
+            background:linear-gradient(135deg,var(--primary),var(--secondary));
+        }
+        .sidebar a{
+            display:flex;gap:12px;align-items:center;text-decoration:none;
+            color:var(--text);padding:12px 14px;border-radius:14px;margin-bottom:8px
+        }
+        .sidebar a:hover,.sidebar a.active-link{
+            background:linear-gradient(135deg,rgba(109,124,255,.18),rgba(139,92,246,.14));
+        }
+        .content{flex:1;padding:28px}
+        .glass-card{
+            background:var(--panel);
+            border:1px solid var(--border);
+            backdrop-filter:blur(18px);
+            border-radius:22px;
+            padding:24px;
+        }
+        .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+        .topbar h1{margin:0;font-size:1.9rem;font-weight:800}
+        .topbar p{margin:6px 0 0;color:var(--muted)}
+        .btn-main{
+            background:linear-gradient(135deg,var(--primary),var(--secondary));
+            border:none;color:#fff;border-radius:14px;font-weight:700;padding:12px 18px
+        }
+        .btn-soft{
+            background:var(--panel);border:1px solid var(--border);
+            color:var(--text);border-radius:14px;padding:12px 18px;font-weight:600
+        }
+        .stat-card{
+            background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:22px;height:100%
+        }
+        .stat-value{font-size:2rem;font-weight:800}
+        .table{
+            color:var(--text);
+        }
+        .table thead th{
+            background:rgba(255,255,255,.08);
+            color:var(--text);
+            border-color:var(--border);
+        }
+        .table td{border-color:rgba(255,255,255,.08)}
+        .pill-spam,.pill-ham{
+            display:inline-block;padding:6px 10px;border-radius:999px;font-weight:700
+        }
+        .pill-spam{background:rgba(239,68,68,.18);color:#fecaca}
+        .pill-ham{background:rgba(34,197,94,.18);color:#bbf7d0}
+        .empty-state{text-align:center;padding:32px;color:var(--muted)}
+        .theme-btn{min-width:120px}
+        @media (max-width: 900px){
+            .app-shell{display:block}
+            .sidebar{width:100%;height:auto}
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body id="body">
+<div class="app-shell">
+    {% if session.get('logged_in') %}
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">✉</div>
+            <div>
+                <div style="font-weight:800">Spam Shield</div>
+                <div style="font-size:.85rem;color:var(--muted)">Email Security App</div>
+            </div>
+        </div>
+
+        <a href="/" class="{% if request.path == '/' %}active-link{% endif %}">🏠 <span>Home</span></a>
+        <a href="/dashboard" class="{% if request.path == '/dashboard' %}active-link{% endif %}">📊 <span>Dashboard</span></a>
+        <a href="/gmail" class="{% if request.path == '/gmail' %}active-link{% endif %}">📧 <span>Gmail</span></a>
+        <a href="/history" class="{% if request.path == '/history' %}active-link{% endif %}">🕘 <span>History</span></a>
+        <a href="/profile" class="{% if request.path == '/profile' %}active-link{% endif %}">👤 <span>Profile</span></a>
+        
+        <a href="/report" class="{% if request.path == '/report' %}active-link{% endif %}">📄 <span>Reports</span></a>
+        <a href="/settings" class="{% if request.path == '/settings' %}active-link{% endif %}">⚙️ <span>Settings</span></a>
+        <a href="/compare" class="{% if request.path == '/compare' %}active-link{% endif %}">🧠 <span>Compare</span></a>
+        
+        <a href="/logout">🚪 <span>Logout</span></a>
+    </aside>
+    {% endif %}
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+
+<script>
+function toggleTheme(){
+    document.body.classList.toggle('light-mode');
+    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+}
+window.onload = function(){
+    if(localStorage.getItem('theme') === 'light'){
+        document.body.classList.add('light-mode');
+    }
+}
+</script>
+{% block extra_script %}{% endblock %}
+</body>
+</html>

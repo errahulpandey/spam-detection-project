@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="topbar">
+    <div>
+        <h1>⚙️ Settings</h1>
+        <p>Manage Gmail scan settings</p>
+    </div>
+</div>
+
+<div class="glass-card">
+    <form method="POST">
+        <label>Gmail Email Limit</label>
+        <input type="number" name="gmail_limit" class="form-control mb-3" value="{{ settings.gmail_limit }}">
+
+        <label>Auto Refresh (seconds)</label>
+        <input type="number" name="auto_refresh" class="form-control mb-3" value="{{ settings.auto_refresh }}">
+
+        <button class="btn btn-main">Save Settings</button>
+    </form>
+</div>
+{% endblock %}
